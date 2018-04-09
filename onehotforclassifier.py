@@ -108,7 +108,7 @@ def apiset(filepathlist):
 
     return listapi
 
-
+# list that each element contains folder name(classname)
 classnamedir = [x[0] for x in os.walk(dir)]
 classnamedir.remove(classnamedir[0])
 
@@ -119,7 +119,10 @@ def whichclassitis(path):
     return classnamedir.index(os.path.dirname(path))
 
 
-
+def classindex2onehot(index):
+    onehotclassindex = [0] * len(classnamedir)
+    onehotclassindex[index] =1
+    return onehotclassindex
 apisetlist = apiset(filepathlist)
 argumentsetlist = argumentset(filepathlist)
 allhooklog =[] # one element is a list that contains the info for one hooklog
@@ -196,11 +199,11 @@ for filepath in filepathlist:
 
     #which class this sample belongs to
     index = whichclassitis(filepath)
-    listinx = []
-    listinx.append(index)
-    # this section is the process of labeling for each sample(row in csv)
 
-    onehot = onehotapi + onehotarg + listinx
+    # this section is the process of labeling for each sample(row in csv)
+    onehotclass =classindex2onehot(index)
+
+    onehot = onehotapi + onehotarg + onehotclass
 
 
     allhooklog.append(onehot)
@@ -216,7 +219,7 @@ for filepath in filepathlist:
 
 onhotencode = np.array([np.array(x) for x in allhooklog])  # nparray onehot encode for one hooklog
 df = DataFrame(onhotencode)
-df.to_csv("{0}.csv".format("onehotforclassifier"))
+df.to_csv("{0}.csv".format("onehotforclassifier"),header =None,index =None)
 
 
 
