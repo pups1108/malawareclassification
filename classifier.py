@@ -3,6 +3,7 @@ from numpy import concatenate
 
 import numpy as np
 from pandas import read_csv
+from keras.layers import Dropout
 from pandas import DataFrame
 from pandas import concat
 from sklearn.preprocessing import MinMaxScaler
@@ -46,7 +47,11 @@ def classifier(samples):
 	# create model
 	model = Sequential()
 	model.add(Dense(150, input_dim=9254, activation='relu'))
+	model.add(Dropout(0.2))
+	model.add(Dense(150, activation='relu'))
+	model.add(Dropout(0.2))
 	model.add(Dense(15, activation='softmax'))
+
 	# Compile model
 	model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 	return model
@@ -74,11 +79,24 @@ Y = dataset[:,-15:]
 #estimator = KerasClassifier(build_fn=classifier(dataset), epochs=200, batch_size=5, verbose=0)
 
 model = classifier(dataset)
-model.fit(X,Y, epochs=200, batch_size=10)
+model.fit(X,Y,validation_split=0.1, epochs=10, batch_size=10)
 
 #results = cross_val_score(estimator, X, Y, cv=kfold)
 #print("Baseline: %.2f%% (%.2f%%)" % (results.mean()*100, results.std()*100))
 
+'''
+for train, test in kfold.split(X, Y):
+  # create model
+	model = Sequential()
+	model = classifier(dataset)
+	#model.fit(X, Y, epochs=200, batch_size=10)
+	model.fit(X[train], Y[train], validation_split=0.33, epochs=200, batch_size=10, verbose=0)
+	# evaluate the model
+	scores = model.evaluate(X[test], Y[test], verbose=0)
+	print("%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
+	cvscores.append(scores[1] * 100)
+print("%.2f%% (+/- %.2f%%)" % (np.mean(cvscores), np.std(cvscores)))
 
+'''
 
 
