@@ -3,6 +3,8 @@ import traceback
 from pandas import read_csv
 from pandas import DataFrame
 import numpy as np
+from pandas import concat
+
 
 
 
@@ -22,6 +24,17 @@ def gothrougheveryfile(dir):  # go through every csv and concat to one csv this 
     return filenamelist
 
 filepathlist = gothrougheveryfile(dir)
+
+def data_to_reconstruction_problem(data,timestep):
+    df = DataFrame(data)
+    list_concat=list()
+    for i in range(timestep-1,-1,-1):
+        tempdf=df.shift(i)
+        list_concat.append(tempdf)
+    data_for_autoencoder=concat(list_concat,axis=1)
+    data_for_autoencoder.dropna(inplace=True)
+    return data_for_autoencoder
+
 
 def argumentset(filepathlist):
     listarg = []
@@ -172,10 +185,7 @@ for filepath in filepathlist:
     for i in range(len(listallapiintegerencode)):  # for one api in one hooklog
         oneapi_onehotforapi = [0] * len(apisetlist)
         oneapi_onehotforarg = [0] * len(argumentsetlist)
-        print("len of apiset")
-        print(len(apisetlist))
-        print("len of argumentset")
-        print(len(argumentsetlist))
+
         for j in range(len(listallapiintegerencode[i])):  # in one api
             if j == 0:  # time to encode api
                 oneapi_onehotforapi[listallapiintegerencode[i][j]] = 1
