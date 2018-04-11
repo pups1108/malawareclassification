@@ -108,16 +108,13 @@ def apiset(filepathlist):
         content =[]
 
 
-    print(j)
-    print(k)
 
     listapi = set(listapi)
     listapi = list(listapi)
 
     #print(listapi)
 
-    print(j)
-    print(k)
+
 
     return listapi
 
@@ -125,6 +122,8 @@ def apiset(filepathlist):
 apisetlist = apiset(filepathlist)
 argumentsetlist = argumentset(filepathlist)
 
+print("this is len of filepathlist")
+print(len(filepathlist))
 filenumber = 0
 for filepath in filepathlist:
     print(filepath)
