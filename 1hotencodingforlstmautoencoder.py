@@ -112,7 +112,7 @@ def apiset(filepathlist):
 apisetlist = apiset(filepathlist)
 argumentsetlist = argumentset(filepathlist)
 
-
+filenumber = 0
 for filepath in filepathlist:
     print(filepath)
     with open(filepath) as f:
@@ -172,6 +172,10 @@ for filepath in filepathlist:
     for i in range(len(listallapiintegerencode)):  # for one api in one hooklog
         oneapi_onehotforapi = [0] * len(apisetlist)
         oneapi_onehotforarg = [0] * len(argumentsetlist)
+        print("len of apiset")
+        print(len(apisetlist))
+        print("len of argumentset")
+        print(len(argumentsetlist))
         for j in range(len(listallapiintegerencode[i])):  # in one api
             if j == 0:  # time to encode api
                 oneapi_onehotforapi[listallapiintegerencode[i][j]] = 1
@@ -187,6 +191,10 @@ for filepath in filepathlist:
     df = DataFrame(onhotencode)
     desdir = "/Users/user/Desktop/hooklogonehotforlstmautoencoder2"
     df.to_csv("{0}/{1}.csv".format(desdir,os.path.basename(filepath)))
+
+    filenumber= filenumber+1
+    print("this is file number")
+    print(filenumber)
 
 
 
