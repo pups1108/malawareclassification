@@ -204,6 +204,11 @@ for filepath in filepathlist:
     onehotclass =classindex2onehot(index)
 
     onehot = onehotapi + onehotarg + onehotclass
+    print("++++++++++++++++++")
+    print(len(onehotapi))
+    print(len(onehotarg))
+    print(len(onehotclass))
+
 
 
     allhooklog.append(onehot)
