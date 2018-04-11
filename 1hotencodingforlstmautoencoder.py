@@ -149,7 +149,7 @@ for filepath in filepathlist:
     # allapi = np.array(allapiandarglist)
 
     # convert to integer format inspired by https://machinelearningmastery.com/how-to-one-hot-encode-sequence-data-in-python/
-    listallapiintegerencode = []  # one hooklog's apis integer encoding . each element is a list which is a api integer encodin
+    listallapiintegerencode = []  # one hooklog's apis integer encoding . each element is a list which is a api and its arg integer encoding
     listoneapiandargcode = []  # for one api to be a list of integer inorder to onehot encoding, for example after running this for loop list will be [3,1800, 176x, ....]
     # which first element 3 means the integer encoding for api and 1800 and the element behind it are the integer encoding for argument
     for i in range(len(allapiandarglist)):  # i is index for apis
@@ -161,8 +161,7 @@ for filepath in filepathlist:
             else: # arg collection
                 indexarg = argumentsetlist.index(allapiandarglist[i][j])
                 listoneapiandargcode.append(indexarg)
-        listallapiintegerencode.append(
-            listoneapiandargcode)  # when one api encoded append its list to big list which included all apis
+        listallapiintegerencode.append(listoneapiandargcode)  # when one api encoded append its list to big list which included all apis
         listoneapiandargcode = []
 
     #print(listallapiintegerencode)
@@ -186,7 +185,8 @@ for filepath in filepathlist:
 
     onhotencode = np.array([np.array(x) for x in onehotallapis])  # nparray onehot encode for one hooklog
     df = DataFrame(onhotencode)
-    df.to_csv("{0}.csv".format(os.path.basename(filepath)))
+    desdir = "/Users/user/Desktop/hooklogonehotforlstmautoencoder2"
+    df.to_csv("{0}/{1}.csv".format(desdir,os.path.basename(filepath)))
 
 
 
