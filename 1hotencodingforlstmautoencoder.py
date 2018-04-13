@@ -47,7 +47,7 @@ def argumentset(filepathlist):
 
         for i in range(len(content)):
             if content[i].find("=")!=-1:
-                #print(content[i])
+
                 #print(content[i].find("="))
                 u = content[i].find("=")
                 #print(content[i][u+1:])
