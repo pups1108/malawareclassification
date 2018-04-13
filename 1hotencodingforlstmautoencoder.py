@@ -60,7 +60,6 @@ def argumentset(filepathlist):
     listarg = list(listarg)
 
 
-    #print(listarg)
 
 
     return listarg
@@ -73,7 +72,7 @@ def apiset(filepathlist):
     listapi = []
     for z in range(len(filepathlist)):
 
-        #print(pathlist[j])
+
 
 
         with open(filepathlist[z]) as f:
@@ -83,13 +82,13 @@ def apiset(filepathlist):
         encountertimestamp = False
         for i in range(len(content)):
             if encountertimestamp == True:
-                #print(content[i])  # there will be apis
-                #print(i)
+
+
                 listapi.append(content[i])
                 encountertimestamp = False
                 k = k+1
 
-            #print(i)
+
 
             try:
 
@@ -112,11 +111,33 @@ def apiset(filepathlist):
     listapi = set(listapi)
     listapi = list(listapi)
 
-    #print(listapi)
+
 
 
 
     return listapi
+
+def writefile(code,filepath):
+    df = DataFrame(code)
+
+    print("this is fucking shape")
+    print(df.shape)
+    desdir = "/Users/user/Desktop/hooklogonehotforlstmautoencoder3"
+    print("this hello fucl ")
+    print(os.path.dirname(filepath))
+    print(os.path.exists(os.path.dirname(filepath)))
+
+
+    if not os.path.isdir("{0}/{1}".format(desdir, filepath.split("//")[-2])):
+        os.makedirs("{0}/{1}".format(desdir, filepath.split("//")[-2]))
+    print("this is")
+
+    df.to_csv("{0}/{1}/{2}.csv".format(desdir, filepath.split("//")[-2], os.path.basename(filepath)))
+
+    print("go there11")
+
+
+
 
 
 apisetlist = apiset(filepathlist)
@@ -127,8 +148,9 @@ print(len(filepathlist))
 filenumber = 0
 for filepath in filepathlist:
     print(filepath)
-    with open(filepath) as f:
+    with open(filepath) as f:#open(filepathlist[299]) as f: #filepath[299]) as f:
         content = f.readlines()
+        #print(content)
     # you may also want to remove whitespace characters like `\n` at the end of each line
     content = [x.strip() for x in content]
 
@@ -138,9 +160,13 @@ for filepath in filepathlist:
     for i in range(len(content)):
         try:
             if content[i] != "":
+
                 if content[i][0] == "#":  # start to catch one api info
+
                     if len(apiinfolist) != 0:
+
                         allapiandarglist.append(apiinfolist)  # when encounter timestamp means go to another api
+
                     apiinfolist = []  # reinit everytime when encounter a timestamp
                     encounterapi = True
         except:
@@ -165,6 +191,7 @@ for filepath in filepathlist:
     listoneapiandargcode = []  # for one api to be a list of integer inorder to onehot encoding, for example after running this for loop list will be [3,1800, 176x, ....]
     # which first element 3 means the integer encoding for api and 1800 and the element behind it are the integer encoding for argument
     for i in range(len(allapiandarglist)):  # i is index for apis
+
         for j in range(len(allapiandarglist[i])):  # j is index in one apis means apiname or its arg
             allapiandarglist[i][j]
             if j == 0:  # index 0 is always apiname
@@ -182,10 +209,12 @@ for filepath in filepathlist:
     onehotallapis = []
 
     for i in range(len(listallapiintegerencode)):  # for one api in one hooklog
+
         oneapi_onehotforapi = [0] * len(apisetlist)
         oneapi_onehotforarg = [0] * len(argumentsetlist)
 
         for j in range(len(listallapiintegerencode[i])):  # in one api
+            #print("go there8")
             if j == 0:  # time to encode api
                 oneapi_onehotforapi[listallapiintegerencode[i][j]] = 1
             else:  # time to encode arg
@@ -195,15 +224,16 @@ for filepath in filepathlist:
         onehotallapis.append(onehot)
         onehot = []
 
-
-    onhotencode = np.array([np.array(x) for x in onehotallapis])  # nparray onehot encode for one hooklog
-    df = DataFrame(onhotencode)
-    desdir = "/Users/user/Desktop/hooklogonehotforlstmautoencoder2"
-    df.to_csv("{0}/{1}.csv".format(desdir,os.path.basename(filepath)))
-
-    filenumber= filenumber+1
+    print("go there10")
+    onehotencode = np.array([np.array(x) for x in onehotallapis])  # nparray onehot encode for one hooklog
+    print(onehotencode.shape)
+    print("go there9")
+    writefile(onehotencode,filepath)
+    filenumber = filenumber + 1
     print("this is file number")
     print(filenumber)
+
+
 
 
 
