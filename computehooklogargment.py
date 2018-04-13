@@ -22,6 +22,7 @@ listarg =[]
 
 
 #with open(pathlist[z]) as f:
+'''
 def argumentset(filepathlist):
     listarg = []
     for z in range(len(filepathlist)): # z indicate which text
@@ -38,6 +39,31 @@ def argumentset(filepathlist):
                 u = content[i].find("=")
                 #print(content[i][u+1:])
                 listarg.append(content[i][u+1:])
+    print(len(listarg))
+    listarg = set(listarg)
+
+
+    #print(listarg)
+    print(len(listarg))
+
+argumentset(filepathlist)
+'''
+
+def argumentset(filepathlist):
+    listarg = []
+    for z in range(len(filepathlist)): # z indicate which text
+
+        with open(filepathlist[z]) as f:
+            content = f.readlines()
+        # you may also want to remove whitespace characters like `\n` at the end of each line
+        content = [x.strip() for x in content]
+
+        for i in range(len(content)):
+            if content[i].find("=")!=-1: #is a arg
+                #print(content[i])
+                #print(content[i].find("="))
+                #print(content[i][u+1:])
+                listarg.append(content[i])
     print(len(listarg))
     listarg = set(listarg)
 
