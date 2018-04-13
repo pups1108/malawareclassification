@@ -36,6 +36,7 @@ def data_to_reconstruction_problem(data,timestep):
     return data_for_autoencoder
 
 
+
 def argumentset(filepathlist):
     listarg = []
     for z in range(len(filepathlist)): # z indicate which text
@@ -46,21 +47,17 @@ def argumentset(filepathlist):
         content = [x.strip() for x in content]
 
         for i in range(len(content)):
-            if content[i].find("=")!=-1:
-
+            if content[i].find("=")!=-1: #is a arg
+                #print(content[i])
                 #print(content[i].find("="))
-                u = content[i].find("=")
                 #print(content[i][u+1:])
-                listarg.append(content[i][u+1:])
-            elif content[i].find(':') != -1:
                 listarg.append(content[i])
-
-
+    print(len(listarg))
     listarg = set(listarg)
     listarg = list(listarg)
 
-
-
+    #print(listarg)
+    print(len(listarg))
 
     return listarg
 
@@ -192,7 +189,7 @@ for filepath in filepathlist:
     # which first element 3 means the integer encoding for api and 1800 and the element behind it are the integer encoding for argument
     for i in range(len(allapiandarglist)):  # i is index for apis
 
-        for j in range(len(allapiandarglist[i])):  # j is index in one apis means apiname or its arg
+        for j in range(len(allapiandarglist[i])):  # j is index in one api means apiname or its arg
             allapiandarglist[i][j]
             if j == 0:  # index 0 is always apiname
                 indexapiname = apisetlist.index(allapiandarglist[i][j])
