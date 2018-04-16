@@ -1,3 +1,5 @@
+#coding=utf-8
+
 import os
 import traceback
 from pandas import read_csv
@@ -5,23 +7,21 @@ from pandas import DataFrame
 import numpy as np
 from pandas import concat
 
+############
+#  只要更改dir給出欲編碼的所以惡意家族的最上層資料夾就能運行
+###
 
 
+dir = "/Users/user/Desktop/17family_trace_selected_param - with all dir"
 
-dir = "/Users/user/Desktop/hooklog"
-
-def gothrougheveryfile(dir):  # go through every csv and concat to one csv this part has move to concatallcsv
-    i = 0
-    filenamelist = list()
-    for subdir in os.listdir(dir):# outside each folder
-        if subdir[0] == '.':
-            continue
-        for filename in os.listdir(dir+"//"+subdir):
-            if filename[0] == '.':
-                continue
-            wholefilepath = dir + "//"+ subdir +"//" +filename
-            filenamelist.append(wholefilepath)
-    return filenamelist
+def gothrougheveryfile(directory):
+    pathlist = []
+    for root, dirs, files in os.walk(directory):
+        for file in files:
+            if file.endswith(".trace"):
+                pathlist.append(os.path.join(root, file))
+    print(len(pathlist))
+    return pathlist
 
 filepathlist = gothrougheveryfile(dir)
 
@@ -51,7 +51,7 @@ def argumentset(filepathlist):
                 #print(content[i])
                 #print(content[i].find("="))
                 #print(content[i][u+1:])
-                listarg.append(content[i])ㄙ
+                listarg.append(content[i])
     print(len(listarg))
     listarg = set(listarg)
     listarg = list(listarg)
@@ -229,7 +229,7 @@ for filepath in filepathlist:
     onehotencode = np.array([np.array(x) for x in onehotallapis])  # nparray onehot encode for one hooklog
     print(onehotencode.shape)
     print("go there9")
-    writefile(onehotencode,filepath)
+    #writefile(onehotencode,filepath)
     filenumber = filenumber + 1
     print("this is file number")
     print(filenumber)
