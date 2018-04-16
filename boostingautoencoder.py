@@ -32,9 +32,12 @@ import random
 
 apa = 200
 batch = 10
-timestep = 16
-numfeature = 25
-filenamelist =  r"/Users/user/Desktop/hooklog2"
+timestep = 8
+numfeature = 9254
+#filenamelist =  r"/Users/user/Desktop/hooklog/"
+
+filenamelist = "/Users/user/Desktop/hooklog/Browsefox"
+
 
 
 def gothrougheveryfile(dir):  # go through every csv and concat to one csv this part has move to concatallcsv
@@ -65,18 +68,18 @@ def out_put_core(writting_list, outaddress, filename):
 
 def data_preprocess(file_name, timestep):
     # read
-    dataset = read_csv(file_name, header=None, index_col=None)
+    dataset = read_csv(file_name,header = 0, index_col = 0) #header=None, index_col=None)
     if dataset.shape[0]<16:
         return 0,0
     values = dataset.values
     reframed = data_to_reconstruction_problem(values, timestep)
     reframedvalues = reframed
-    reframed = reframed.astype('float32')
-    scaler = MinMaxScaler(feature_range=(0, 1))
-    scaled = scaler.fit_transform(reframed)
-    dfscaled = DataFrame(scaled)
-    valuescaled =dfscaled.values
-    return  valuescaled,scaler,reframedvalues
+    #reframed = reframed.astype('float32')
+    #scaler = MinMaxScaler(feature_range=(0, 1))
+    #scaled = scaler.fit_transform(reframed)
+    #dfscaled = DataFrame(scaled)
+    #valuescaled =dfscaled.values
+    return  reframedvalues,reframedvalues
 
 
 def SingleFileLstmAutoencoder(apa, batch, n_apis, n_features, data_for_model_training):
@@ -86,8 +89,8 @@ def SingleFileLstmAutoencoder(apa, batch, n_apis, n_features, data_for_model_tra
     W_Hidden3_list = list()
     W_Hidden4_list = list()
     W_Hidden5_list = list()
-    train_X, scaler, y = data_preprocess(data_for_model_training, n_apis)#146,400
-    train_X = train_X.reshape((train_X.shape[0], n_apis, n_features))
+    train_X, y = data_preprocess(data_for_model_training, n_apis)#146,400
+    train_X = train_X.reshape((train_X.shape[0], n_apis, 9254))
     sample_number = train_X.shape[0]
     outputlayer2 = n_apis #16
     outputlayer3 = int(n_apis / 2) #8
@@ -147,9 +150,10 @@ def postboosting(test_x, timestep, numfeature, apa, batch):
 
 a = set()
 while len(a)<5:
-    a.add(random.choice(os.listdir(r"C:\Users\pups1\OneDrive\桌面\hooklogonehotforlstmautoencoder\hooklog")))#(r"/Users/yanyaosheng/Desktop/work_keras/final_csv/Browsefox/")))
+    a.add(random.choice(os.listdir(filenamelist)))#(r"/Users/yanyaosheng/Desktop/work_keras/final_csv/Browsefox/")))
     if len(a) == 5:
         break
+
 print("using:")
 print(list(a))
 print("as five individual autoencoder.")
