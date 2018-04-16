@@ -47,11 +47,11 @@ def argumentset(filepathlist):
         content = [x.strip() for x in content]
 
         for i in range(len(content)):
-            if content[i].find("=")!=-1: #is a arg
+            if content[i].find("=")!=-1 or content[i].find(":")!=-1: #is a arg
                 #print(content[i])
                 #print(content[i].find("="))
                 #print(content[i][u+1:])
-                listarg.append(content[i])
+                listarg.append(content[i])ㄙ
     print(len(listarg))
     listarg = set(listarg)
     listarg = list(listarg)
@@ -154,6 +154,15 @@ for filepath in filepathlist:
     allapiandarglist = []
     apiinfolist = []
     encounterapi = False
+    with open(filepath) as f:  # open(filepathlist[299]) as f: #filepath[299]) as f:
+        content = f.readlines()
+        # print(content)
+    # you may also want to remove whitespace characters like `\n` at the end of each line
+    content = [x.strip() for x in content]
+
+    allapiandarglist = []
+    apiinfolist = []
+    encounterapi = False
     for i in range(len(content)):
         try:
             if content[i] != "":
@@ -161,7 +170,6 @@ for filepath in filepathlist:
                 if content[i][0] == "#":  # start to catch one api info
 
                     if len(apiinfolist) != 0:
-
                         allapiandarglist.append(apiinfolist)  # when encounter timestamp means go to another api
 
                     apiinfolist = []  # reinit everytime when encounter a timestamp
@@ -173,12 +181,8 @@ for filepath in filepathlist:
         if encounterapi == True:
             if content[i] != "":
                 if content[i][0] != "#":
-                    if content[i].find("=") != -1:
-                        u = content[i].find("=")
-                        apiinfolist.append(content[i][u + 1:])
+                    apiinfolist.append(content[i])
 
-                    else:
-                        apiinfolist.append(content[i])
 
     #allapi = np.array([np.array(x) for x in allapiandarglist])  # convert two dim list to two dim array
     # allapi = np.array(allapiandarglist)
