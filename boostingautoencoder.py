@@ -150,7 +150,7 @@ def postboosting(test_x, timestep, numfeature, apa, batch):
 
 a = set()
 while len(a)<5:
-    a.add(random.choice(os.listdir(filenamelist)))#(r"/Users/yanyaosheng/Desktop/work_keras/final_csv/Browsefox/")))
+    a.add(random.choice(os.listdir(filenamelist)))#(r"/Users/yanyaosheng/Desktop/work_keras/final_csv/Browsefox/")))f
     if len(a) == 5:
         break
 
