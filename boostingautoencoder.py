@@ -30,26 +30,231 @@ from keras.utils.vis_utils import model_to_dot
 import random
 
 
-apa = 200
+apa = 10
 batch = 10
 timestep = 8
-numfeature = 9254
+numfeature =  6294
 #filenamelist =  r"/Users/user/Desktop/hooklog/"
 
-filenamelist = "/Users/user/Desktop/hooklog/Browsefox"
+familydir = "/Users/user/Desktop/17family_trace_selected_param - with all dir/autoit"
+
+def argumentset(filepathlist):
+    listarg = []
+    for z in range(len(filepathlist)): # z indicate which text
+
+        with open(filepathlist[z]) as f:
+            content = f.readlines()
+        # you may also want to remove whitespace characters like `\n` at the end of each line
+        content = [x.strip() for x in content]
+
+        for i in range(len(content)):
+            if content[i].find("=")!=-1 or content[i].find(":")!=-1: #is a arg
+                #print(content[i])
+                #print(content[i].find("="))
+                #print(content[i][u+1:])
+                listarg.append(content[i])
+    print(len(listarg))
+    listarg = set(listarg)
+    listarg = list(listarg)
+
+    #print(listarg)
+    print(len(listarg))
+
+    return listarg
 
 
 
-def gothrougheveryfile(dir):  # go through every csv and concat to one csv this part has move to concatallcsv
-    i = 0
-    filenamelist = list()
-    for filename in os.listdir(dir):  # outside each folder
-        wholefilepath = dir + "//" + filename
-        filenamelist.append(wholefilepath)
-    return filenamelist
+def apiset(filepathlist):
+    k = 0
+    j = 0
+    listapi = []
+    for z in range(len(filepathlist)):
+
+
+
+
+        with open(filepathlist[z]) as f:
+            content = f.readlines()
+        # you may also want to remove whitespace characters like `\n` at the end of each line
+        content = [x.strip() for x in content]
+        encountertimestamp = False
+        for i in range(len(content)):
+            if encountertimestamp == True:
+
+
+                listapi.append(content[i])
+                encountertimestamp = False
+                k = k+1
+
+
+
+            try:
+
+                if content[i] != "":
+                    if content[i][0] == '#':
+                        encountertimestamp = True
+
+                        j =j+1
+            except :
+                print("error"+str(i))
+                print(len(content))
+                print(content[i])
+                traceback.print_exc()
+
+
+        content =[]
+
+
+
+    listapi = set(listapi)
+    listapi = list(listapi)
+
+
+
+
+
+    return listapi
+
+def writefile(code,filepath):
+    df = DataFrame(code)
+
+    print("this is fucking shape")
+    print(df.shape)
+    desdir = "/Users/user/Desktop/hooklogonehotforlstmautoencoder3"
+    print("this hello fucl ")
+    print(os.path.dirname(filepath))
+    print(os.path.exists(os.path.dirname(filepath)))
+
+
+    if not os.path.isdir("{0}/{1}".format(desdir, filepath.split("//")[-2])):
+        os.makedirs("{0}/{1}".format(desdir, filepath.split("//")[-2]))
+    print("this is")
+
+    df.to_csv("{0}/{1}/{2}.csv".format(desdir, filepath.split("//")[-2], os.path.basename(filepath)))
+
+    print("go there11")
+
+
+
+
+
+
+
+
+def featureencodeto10represent(filepath,filepathlist):
+    filenumber = 0
+    filepathlist = gothrougheveryfile(filepathlist)
+    apisetlist = apiset(filepathlist)
+    argumentsetlist = argumentset(filepathlist)
+    print("this is apisetlist + argumentsetlist")
+    print(len(apisetlist)+len(argumentsetlist))
+
+
+
+    print(filepath)
+    with open(filepath) as f:#open(filepathlist[299]) as f: #filepath[299]) as f:
+        content = f.readlines()
+        #print(content)
+    # you may also want to remove whitespace characters like `\n` at the end of each line
+    content = [x.strip() for x in content]
+
+    allapiandarglist = []
+    apiinfolist = []
+    encounterapi = False
+    with open(filepath) as f:  # open(filepathlist[299]) as f: #filepath[299]) as f:
+        content = f.readlines()
+        # print(content)
+    # you may also want to remove whitespace characters like `\n` at the end of each line
+    content = [x.strip() for x in content]
+
+    allapiandarglist = []
+    apiinfolist = []
+    encounterapi = False
+    for i in range(len(content)):
+        try:
+            if content[i] != "":
+
+                if content[i][0] == "#":  # start to catch one api info
+
+                    if len(apiinfolist) != 0:
+                        allapiandarglist.append(apiinfolist)  # when encounter timestamp means go to another api
+
+                    apiinfolist = []  # reinit everytime when encounter a timestamp
+                    encounterapi = True
+        except:
+            print("i is number")
+            print(i)
+            print(len(content))
+        if encounterapi == True:
+            if content[i] != "":
+                if content[i][0] != "#":
+                    apiinfolist.append(content[i])
+
+
+    #allapi = np.array([np.array(x) for x in allapiandarglist])  # convert two dim list to two dim array
+    # allapi = np.array(allapiandarglist)
+
+    # convert to integer format inspired by https://machinelearningmastery.com/how-to-one-hot-encode-sequence-data-in-python/
+    listallapiintegerencode = []  # one hooklog's apis integer encoding . each element is a list which is a api and its arg integer encoding
+    listoneapiandargcode = []  # for one api to be a list of integer inorder to onehot encoding, for example after running this for loop list will be [3,1800, 176x, ....]
+    # which first element 3 means the integer encoding for api and 1800 and the element behind it are the integer encoding for argument
+    for i in range(len(allapiandarglist)):  # i is index for apis
+
+        for j in range(len(allapiandarglist[i])):  # j is index in one api means apiname or its arg
+            allapiandarglist[i][j]
+            if j == 0:  # index 0 is always apiname
+                indexapiname = apisetlist.index(allapiandarglist[i][j])
+                listoneapiandargcode.append(indexapiname)
+            else: # arg collection
+                indexarg = argumentsetlist.index(allapiandarglist[i][j])
+                listoneapiandargcode.append(indexarg)
+        listallapiintegerencode.append(listoneapiandargcode)  # when one api encoded append its list to big list which included all apis
+        listoneapiandargcode = []
+
+    #print(listallapiintegerencode)
+
+    onehot = []
+    onehotallapis = []
+
+    for i in range(len(listallapiintegerencode)):  # for one api in one hooklog
+
+        oneapi_onehotforapi = [0] * len(apisetlist)
+        oneapi_onehotforarg = [0] * len(argumentsetlist)
+
+        for j in range(len(listallapiintegerencode[i])):  # in one api
+            #print("go there8")
+            if j == 0:  # time to encode api
+                oneapi_onehotforapi[listallapiintegerencode[i][j]] = 1
+            else:  # time to encode arg
+                oneapi_onehotforarg[listallapiintegerencode[i][j]] = 1
+
+        onehot = oneapi_onehotforapi + oneapi_onehotforarg  # onehot for one api
+        onehotallapis.append(onehot)
+        onehot = []
+
+    print("go there10")
+    onehotencode = np.array([np.array(x) for x in onehotallapis])  # nparray onehot encode for one hooklog
+    print(onehotencode.shape)
+    print("go there9")
+    #writefile(onehotencode,filepath)
+    filenumber = filenumber + 1
+    print("this is file number")
+    print(filenumber)
+    return onehotencode
+
+
+def gothrougheveryfile(directory):
+    pathlist = []
+    for root, dirs, files in os.walk(directory):
+        for file in files:
+            if file.endswith(".trace"):
+                pathlist.append(os.path.join(root, file))
+    print(len(pathlist))
+    return pathlist
 
 
 def data_to_reconstruction_problem(data, timestep):
+    print("data_to_reconstruction_problem1")
     df = DataFrame(data)
     list_concat = list()
     for i in range(timestep - 1, -1, -1):
@@ -57,6 +262,7 @@ def data_to_reconstruction_problem(data, timestep):
         list_concat.append(tempdf)
     data_for_autoencoder = concat(list_concat, axis=1)
     data_for_autoencoder.dropna(inplace=True)
+    print("data_to_reconstruction_problem2")
     return data_for_autoencoder
 
 
@@ -68,18 +274,21 @@ def out_put_core(writting_list, outaddress, filename):
 
 def data_preprocess(file_name, timestep):
     # read
-    dataset = read_csv(file_name,header = 0, index_col = 0) #header=None, index_col=None)
-    if dataset.shape[0]<16:
+    #dataset = read_csv(file_name,header = 0, index_col = 0) #header=None, index_col=None)
+    encoding01 =featureencodeto10represent(file_name,familydir)
+    if encoding01.shape[0]<16:
         return 0,0
-    values = dataset.values
-    reframed = data_to_reconstruction_problem(values, timestep)
-    reframedvalues = reframed
+    #values = encoding01.values
+    reframed = data_to_reconstruction_problem(encoding01, timestep)
+
+
+    values = reframed.values
     #reframed = reframed.astype('float32')
     #scaler = MinMaxScaler(feature_range=(0, 1))
     #scaled = scaler.fit_transform(reframed)
     #dfscaled = DataFrame(scaled)
     #valuescaled =dfscaled.values
-    return  reframedvalues,reframedvalues
+    return  values,values
 
 
 def SingleFileLstmAutoencoder(apa, batch, n_apis, n_features, data_for_model_training):
@@ -89,20 +298,25 @@ def SingleFileLstmAutoencoder(apa, batch, n_apis, n_features, data_for_model_tra
     W_Hidden3_list = list()
     W_Hidden4_list = list()
     W_Hidden5_list = list()
+    #現在改成讀進hooklog文字檔
     train_X, y = data_preprocess(data_for_model_training, n_apis)#146,400
-    train_X = train_X.reshape((train_X.shape[0], n_apis, 9254))
+    train_X = train_X.reshape((train_X.shape[0], n_apis, n_features))
     sample_number = train_X.shape[0]
     outputlayer2 = n_apis #16
     outputlayer3 = int(n_apis / 2) #8
     timesstep4 = int(n_apis / 4) # 4
+    print("in SingleFileLstmAutoencoder1")
     model = Sequential()
     model.add(LSTM(n_features, input_shape=(n_apis, train_X.shape[2]), return_sequences=True))  # train_X.shape[2] = 34
     model.add(LSTM(outputlayer2, return_sequences=True))
     model.add(LSTM(outputlayer3, return_sequences=True))
     model.add(LSTM(outputlayer2, return_sequences=True))
     model.add(LSTM(n_features, return_sequences=True))
+    print("in SingleFileLstmAutoencoder3")
     model.compile(loss='mean_squared_error', optimizer='adam', metrics=['accuracy'])
+    print("in SingleFileLstmAutoencoder4")
     history = model.fit(train_X, train_X, epochs=apa, batch_size=batch, shuffle=False)  # train
+    print("in SingleFileLstmAutoencoder2")
     return model
     #model.save(saved_model)
 
@@ -149,19 +363,21 @@ def postboosting(test_x, timestep, numfeature, apa, batch):
 #這邊是獨立建立五筆autoencoder
 
 a = set()
+familyfilelist =gothrougheveryfile(familydir)
 while len(a)<5:
-    a.add(random.choice(os.listdir(filenamelist)))#(r"/Users/yanyaosheng/Desktop/work_keras/final_csv/Browsefox/")))f
+
+    a.add(random.choice(familyfilelist))#(r"/Users/yanyaosheng/Desktop/work_keras/final_csv/Browsefox/")))f
     if len(a) == 5:
         break
 
 print("using:")
 print(list(a))
 print("as five individual autoencoder.")
-k1, k2, k3, k4, k5 = train5modelAE(apa, batch, timestep, numfeature, filenamelist+list(a)[0], filenamelist+list(a)[1], filenamelist+list(a)[2], filenamelist+list(a)[3], filenamelist+list(a)[4])
+k1, k2, k3, k4, k5 = train5modelAE(apa, batch, timestep, numfeature, list(a)[0], list(a)[1], list(a)[2], list(a)[3], list(a)[4])
 
 aaa = 0
-for filename in listdir(filenamelist):
-    test_x, scaler, y = data_preprocess(filenamelist + filename, timestep)
+for filename in listdir(familydir):
+    test_x, scaler, y = data_preprocess(familydir + filename, timestep)
     test_x = test_x.reshape(test_x.shape[0], timestep, numfeature)
     if aaa == 0:
         new_test_x = test_x
@@ -183,10 +399,10 @@ kkk = postboosting(new_test_x, timestep, numfeature, apa, batch)
 ################################################################
 # kkk為訓練好的boosting檔案
 ################################################################
-filepathlist = r"/Users/yanyaosheng/Desktop/work_keras/final_csv/Browsefox/"
+
 a = []
-for ii in range(aaa, (len(listdir(filenamelist)))):
-    test_x, scaler, y = data_preprocess(filepathlist + listdir(filenamelist)[ii], timestep)
+for ii in range(aaa, (len(listdir(familydir)))):
+    test_x, scaler, y = data_preprocess(familydir + listdir(familydir)[ii], timestep)
     test_x = test_x.reshape(test_x.shape[0], timestep, numfeature)
     yhatk1 = k1.predict(test_x)
     yhatk2 = k2.predict(test_x)
@@ -202,10 +418,10 @@ for ii in range(aaa, (len(listdir(filenamelist)))):
     "==="
     rmse = np.sqrt(np.mean(((yhat - y) ** 2), axis=1))
     print
-    listdir(filenamelist)[ii]
+    listdir(familydir)[ii]
     print
     np.mean(rmse)
-    a.append(listdir(filenamelist)[ii])
+    a.append(listdir(familydir)[ii])
     a.append(np.mean(rmse))
 
 thefile = open('test.txt', 'w')
